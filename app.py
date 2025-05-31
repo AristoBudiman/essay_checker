@@ -97,12 +97,12 @@ def hitung_miu_rules(r, k, a):
     return miu_rules
 
 def hitung_nilai_rules():
-    r_values = [0.3, 0.5, 0.7]
-    k_values = [0.3, 0.5, 0.7]
-    a_values = [0.3, 0.5, 0.7]
+    r_values = [0, 0.5, 1]
+    k_values = [0, 0.5, 1]
+    a_values = [0, 0.5, 1]
     nilai_rules = []
     for r, k, a in itertools.product(r_values, k_values, a_values):
-        nilai = 100 * (0.4 * r + 0.3 * k + 0.3 * a)
+        nilai = 100 * (0.5 * r + 0.3 * k + 0.2 * a)
         nilai_rules.append(nilai)
     return nilai_rules
 
@@ -128,8 +128,6 @@ with st.expander("📝 Input Kata Kunci"):
     if "kata_kunci_list" not in st.session_state:
         st.session_state.kata_kunci_list = [
             {"kata": "struktur data", "bobot": 3, "deskripsi": "Dasar penyimpanan dan pengolahan data"},
-            {"kata": "basis data", "bobot": 2, "deskripsi": "Digunakan untuk manajemen data terstruktur"},
-            {"kata": "algoritma", "bobot": 1, "deskripsi": "Langkah-langkah penyelesaian masalah"},
         ]
 
     kata_kunci_baru = []

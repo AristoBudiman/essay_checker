@@ -3,9 +3,7 @@ import re
 import itertools
 from typing import List
 
-# ==================== Bagian Fungsi ====================
-
-def buat_dict_dari_kumpulan(kumpulan):
+def buat_kamus_dari_kumpulan(kumpulan):
     return {kata.lower(): {'bobot': bobot, 'deskripsi': deskripsi} for kata, bobot, deskripsi in kumpulan}
 
 def hitung_relevansi(kunci_dict, jawaban):
@@ -53,14 +51,13 @@ def buat_feedback(kunci_dict, belum_disebut):
     for kata in belum_disebut:
         info = kunci_dict.get(kata, {'bobot': 0, 'deskripsi': ''})
         if info['bobot'] >= 2:
-            feedback.append(f"❗ Kata kunci penting belum disebut: **{kata}** (bobot {info['bobot']}) - *{info['deskripsi']}*")
+            feedback.append(f"Kata kunci penting belum disebut: **{kata}** (bobot {info['bobot']}) - *{info['deskripsi']}*")
         else:
-            feedback.append(f"🔎 Anda belum menyebutkan **{kata}** - *{info['deskripsi']}*")
+            feedback.append(f"Anda belum menyebutkan **{kata}** - *{info['deskripsi']}*")
     if not feedback:
-        feedback.append("✅ Semua kata kunci telah disebut. Jawaban sangat lengkap.")
+        feedback.append("Semua kata kunci telah disebut. Jawaban sangat lengkap.")
     return feedback
 
-# Fungsi keanggotaan fuzzy
 def miu_rendah(x):
     if x <= 0.2:
         return 1
@@ -119,36 +116,48 @@ def sistem_fuzzy(r, k, a):
     hasil_akhir = defuzzifikasi_average(miu_rules, nilai_rules)
     return hasil_akhir
 
-# ==================== Streamlit UI ====================
-st.title("📘 Penilai Esai Mahasiswa (Fuzzy)")
+# Streamlit Ui
+st.title("Penilai Esai Mahasiswa (Fuzzy)")
 
-with st.expander("📝 Input Kata Kunci"):
+with st.expander("Input Kata Kunci"):
     st.markdown("Masukkan kata kunci satu per satu di bawah ini:")
 
     if "kata_kunci_list" not in st.session_state:
         st.session_state.kata_kunci_list = [
-            {"kata": "struktur data", "bobot": 3, "deskripsi": "Dasar penyimpanan dan pengolahan data"},
+            { "kata": "internet",        "bobot": 3, "deskripsi": "Jaringan global yang menghubungkan jutaan perangkat di seluruh dunia." },
+            { "kata": "intranet",        "bobot": 3, "deskripsi": "Jaringan lokal bersifat privat dalam suatu organisasi." },
+            { "kata": "akses publik",    "bobot": 2, "deskripsi": "Internet dapat diakses oleh siapa saja." },
+            { "kata": "akses terbatas",  "bobot": 2, "deskripsi": "Intranet hanya dapat diakses oleh pengguna tertentu." },
+            { "kata": "keamanan",        "bobot": 1, "deskripsi": "Intranet lebih aman karena bersifat terbatas." },
+            { "kata": "cakupan",         "bobot": 1, "deskripsi": "Internet bersifat luas, intranet bersifat terbatas." }
         ]
 
     kata_kunci_baru = []
+
     for i, item in enumerate(st.session_state.kata_kunci_list):
-        st.markdown(f"**Kata Kunci #{i+1}**")
-        kata = st.text_input(f"Kata #{i+1}", item["kata"], key=f"kata_{i}")
-        bobot = st.number_input(f"Bobot #{i+1}", min_value=1, max_value=5, value=item["bobot"], key=f"bobot_{i}")
-        deskripsi = st.text_input(f"Deskripsi #{i+1}", item["deskripsi"], key=f"desk_{i}")
-        kata_kunci_baru.append((kata.strip(), int(bobot), deskripsi.strip()))
+        col1, col2 = st.columns([5, 1])
+        with col1:
+            st.markdown(f"**Kata Kunci #{i+1}**")
+            kata = st.text_input(f"Kata #{i+1}", item["kata"], key=f"kata_{i}")
+            bobot = st.number_input(f"Bobot #{i+1}", min_value=1, max_value=5, value=item["bobot"], key=f"bobot_{i}")
+            deskripsi = st.text_input(f"Deskripsi #{i+1}", item["deskripsi"], key=f"desk_{i}")
+            kata_kunci_baru.append((kata.strip(), int(bobot), deskripsi.strip()))
+        with col2:
+            if st.button("Hapus", key=f"hapus_{i}"):
+                st.session_state.kata_kunci_list.pop(i)
+                st.experimental_rerun()
         st.markdown("---")
 
-    if st.button("➕ Tambah Kata Kunci"):
+    if st.button("Tambah Kata Kunci"):
         st.session_state.kata_kunci_list.append({"kata": "", "bobot": 1, "deskripsi": ""})
 
     kumpulan_kata_kunci = kata_kunci_baru
 
-kunci_jawaban = st.text_area("📌 Kunci Jawaban", value="Struktur data digunakan untuk menyimpan dan mengelola data. Basis data digunakan dalam sistem informasi. Algoritma adalah langkah pemecahan masalah.")
-jawaban_mahasiswa = st.text_area("✍️ Jawaban Mahasiswa", value="Struktur data digunakan untuk menyimpan dan mengelola data. Basis data digunakan dalam sistem informasi.")
+kunci_jawaban = st.text_area("Kunci Jawaban", value="Internet adalah jaringan global yang dapat diakses publik, sementara intranet adalah jaringan lokal privat yang hanya dapat diakses oleh anggota organisasi. Internet memiliki cakupan luas, sedangkan intranet terbatas dan lebih aman.")
+jawaban_mahasiswa = st.text_area("Jawaban Mahasiswa", value="Internet bisa diakses publik, sedangkan intranet hanya bisa diakses oleh anggota kelompok tertentu")
 
-if st.button("🔍 Proses Penilaian"):
-    kunci_dict = buat_dict_dari_kumpulan(kumpulan_kata_kunci)
+if st.button("Proses Penilaian"):
+    kunci_dict = buat_kamus_dari_kumpulan(kumpulan_kata_kunci)
     relevansi = hitung_relevansi(kunci_dict, jawaban_mahasiswa)
     kelengkapan = hitung_kelengkapan(kunci_dict, jawaban_mahasiswa)
     rasio_argumen = hitung_argumen(jawaban_mahasiswa, kunci_jawaban)
@@ -156,24 +165,24 @@ if st.button("🔍 Proses Penilaian"):
     feedback = buat_feedback(kunci_dict, belum_disebut)
     skor_akhir = sistem_fuzzy(relevansi, kelengkapan, rasio_argumen)
 
-    st.subheader("📌 Ringkasan Input")
+    st.subheader("Ringkasan Input")
     
-    st.markdown("**🔑 Kata Kunci & Bobot:**")
+    st.markdown("**Kata Kunci & Bobot:**")
     for kata, info in kunci_dict.items():
         st.markdown(f"- **{kata}** (Bobot: {info['bobot']}) - *{info['deskripsi']}*")
 
-    st.markdown("**📘 Kunci Jawaban:**")
+    st.markdown("**Kunci Jawaban:**")
     st.info(kunci_jawaban)
 
-    st.markdown("**✍️ Jawaban Mahasiswa:**")
+    st.markdown("**Jawaban Mahasiswa:**")
     st.warning(jawaban_mahasiswa)
 
-    st.subheader("📊 Hasil Analisis:")
+    st.subheader("Hasil Analisis:")
     st.write(f"**Relevansi:** {relevansi:.2f}")
     st.write(f"**Kelengkapan:** {kelengkapan:.2f}")
     st.write(f"**Argumen:** {rasio_argumen:.2f}")
     st.write(f"**Skor Akhir (Fuzzy):** {skor_akhir:.2f}")
 
-    st.subheader("🗒️ Feedback:")
+    st.subheader("Feedback:")
     for f in feedback:
         st.markdown(f"- {f}")

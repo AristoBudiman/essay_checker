@@ -132,8 +132,9 @@ with st.expander("Input Kata Kunci"):
             { "kata": "cakupan",         "bobot": 1, "deskripsi": "Internet bersifat luas, intranet bersifat terbatas." }
         ]
 
-    kata_kunci_baru = []
+    hapus_index = None 
 
+    kata_kunci_baru = []
     for i, item in enumerate(st.session_state.kata_kunci_list):
         col1, col2 = st.columns([5, 1])
         with col1:
@@ -144,12 +145,17 @@ with st.expander("Input Kata Kunci"):
             kata_kunci_baru.append((kata.strip(), int(bobot), deskripsi.strip()))
         with col2:
             if st.button("Hapus", key=f"hapus_{i}"):
-                st.session_state.kata_kunci_list.pop(i)
-                st.experimental_rerun()
+                hapus_index = i  
         st.markdown("---")
+
+    if hapus_index is not None:
+        st.session_state.kata_kunci_list.pop(hapus_index)
+        st.experimental_rerun()
+
 
     if st.button("Tambah Kata Kunci"):
         st.session_state.kata_kunci_list.append({"kata": "", "bobot": 1, "deskripsi": ""})
+        st.experimental_rerun()
 
     kumpulan_kata_kunci = kata_kunci_baru
 

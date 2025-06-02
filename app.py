@@ -132,9 +132,8 @@ with st.expander("Input Kata Kunci"):
             { "kata": "cakupan",         "bobot": 1, "deskripsi": "Internet bersifat luas, intranet bersifat terbatas." }
         ]
 
-    hapus_index = None 
-
     kata_kunci_baru = []
+
     for i, item in enumerate(st.session_state.kata_kunci_list):
         col1, col2 = st.columns([5, 1])
         with col1:
@@ -145,22 +144,19 @@ with st.expander("Input Kata Kunci"):
             kata_kunci_baru.append((kata.strip(), int(bobot), deskripsi.strip()))
         with col2:
             if st.button("Hapus", key=f"hapus_{i}"):
-                hapus_index = i  
+                st.session_state.kata_kunci_list.pop(i)
+                st.rerun()
         st.markdown("---")
-
-    if hapus_index is not None:
-        st.session_state.kata_kunci_list.pop(hapus_index)
-        st.experimental_rerun()
 
 
     if st.button("Tambah Kata Kunci"):
         st.session_state.kata_kunci_list.append({"kata": "", "bobot": 1, "deskripsi": ""})
-        st.experimental_rerun()
+        st.rerun()
 
     kumpulan_kata_kunci = kata_kunci_baru
 
-kunci_jawaban = st.text_area("Kunci Jawaban", value="Internet adalah jaringan global yang dapat diakses publik, sementara intranet adalah jaringan lokal privat yang hanya dapat diakses oleh anggota organisasi. Internet memiliki cakupan luas, sedangkan intranet terbatas dan lebih aman.")
-jawaban_mahasiswa = st.text_area("Jawaban Mahasiswa", value="Internet bisa diakses publik, sedangkan intranet hanya bisa diakses oleh anggota kelompok tertentu")
+kunci_jawaban = st.text_area("Kunci Jawaban", value="Internet adalah jaringan global yang dapat di akses publik, sementara intranet adalah jaringan lokal privat yang hanya dapat diakses oleh anggota organisasi. Internet memiliki cakupan luas, sedangkan intranet terbatas dan lebih aman.")
+jawaban_mahasiswa = st.text_area("Jawaban Mahasiswa", value="Internet bisa diakses publik, sedangkan intranet hanya bisa di akses terbatas")
 
 if st.button("Proses Penilaian"):
     kunci_dict = buat_kamus_dari_kumpulan(kumpulan_kata_kunci)

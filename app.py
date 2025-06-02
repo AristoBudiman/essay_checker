@@ -125,10 +125,7 @@ with st.expander("Input Kata Kunci"):
     if "kata_kunci_list" not in st.session_state:
         st.session_state.kata_kunci_list = [
             { "kata": "internet",        "bobot": 2, "deskripsi": "Jaringan global yang menghubungkan jutaan perangkat di seluruh dunia." },
-            { "kata": "intranet",        "bobot": 2, "deskripsi": "Jaringan lokal bersifat privat dalam suatu organisasi." },
             { "kata": "akses publik",    "bobot": 3, "deskripsi": "Internet dapat diakses oleh siapa saja." },
-            { "kata": "akses terbatas",  "bobot": 3, "deskripsi": "Intranet hanya dapat diakses oleh pengguna tertentu." },
-            { "kata": "keamanan",        "bobot": 1, "deskripsi": "Intranet lebih aman karena bersifat terbatas." },
             { "kata": "cakupan",         "bobot": 1, "deskripsi": "Internet bersifat luas, intranet bersifat terbatas." }
         ]
 
@@ -155,8 +152,8 @@ with st.expander("Input Kata Kunci"):
 
     kumpulan_kata_kunci = kata_kunci_baru
 
-kunci_jawaban = st.text_area("Kunci Jawaban", value="Internet adalah jaringan global yang dapat di akses publik, sementara intranet adalah jaringan lokal privat yang hanya dapat diakses oleh anggota organisasi. Internet memiliki cakupan luas, sedangkan intranet terbatas dan lebih aman.")
-jawaban_mahasiswa = st.text_area("Jawaban Mahasiswa", value="Internet bisa di akses publik, sedangkan intranet hanya bisa di akses terbatas")
+kunci_jawaban = st.text_area("Kunci Jawaban", value="Internet adalah jaringan global yang dapat di akses publik, Internet memiliki cakupan luas")
+jawaban_mahasiswa = st.text_area("Jawaban Mahasiswa", value="Internet bisa di akses publik")
 
 if st.button("Proses Penilaian"):
     kunci_dict = buat_kamus_dari_kumpulan(kumpulan_kata_kunci)

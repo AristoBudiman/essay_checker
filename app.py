@@ -124,9 +124,14 @@ with st.expander("Input Kata Kunci"):
 
     if "kata_kunci_list" not in st.session_state:
         st.session_state.kata_kunci_list = [
-            { "kata": "internet",        "bobot": 2, "deskripsi": "Jaringan global yang menghubungkan jutaan perangkat di seluruh dunia." },
-            { "kata": "akses publik",    "bobot": 3, "deskripsi": "Internet dapat diakses oleh siapa saja." },
-            { "kata": "cakupan",         "bobot": 1, "deskripsi": "Internet bersifat luas, intranet bersifat terbatas." }
+            { "kata": "metode",     "bobot": 8, "deskripsi": "Merujuk pada cara atau teknik yang digunakan dalam akses media." },
+            { "kata": "akses",      "bobot": 7, "deskripsi": "Menunjukkan proses menghubungkan atau menggunakan jaringan." },
+            { "kata": "media",      "bobot": 6, "deskripsi": "Sarana fisik atau logis untuk transmisi data." },
+            { "kata": "jaringan",   "bobot": 5, "deskripsi": "Kumpulan perangkat yang saling terhubung untuk komunikasi data." },
+            { "kata": "berbagi",    "bobot": 4, "deskripsi": "Menunjukkan bahwa beberapa host menggunakan sumber daya bersama." },
+            { "kata": "bandwidth",  "bobot": 3, "deskripsi": "Kapasitas maksimum transfer data dalam jaringan." },
+            { "kata": "sama",       "bobot": 2, "deskripsi": "Mengindikasikan kesetaraan penggunaan oleh semua host." },
+            { "kata": "link",       "bobot": 1, "deskripsi": "Sambungan fisik atau logis antar perangkat dalam jaringan." }
         ]
 
     kata_kunci_baru = []
@@ -136,7 +141,7 @@ with st.expander("Input Kata Kunci"):
         with col1:
             st.markdown(f"**Kata Kunci #{i+1}**")
             kata = st.text_input(f"Kata #{i+1}", item["kata"], key=f"kata_{i}")
-            bobot = st.number_input(f"Bobot #{i+1}", min_value=1, max_value=5, value=item["bobot"], key=f"bobot_{i}")
+            bobot = st.number_input(f"Bobot #{i+1}", min_value=1, max_value=10, value=item["bobot"], key=f"bobot_{i}")
             deskripsi = st.text_input(f"Deskripsi #{i+1}", item["deskripsi"], key=f"desk_{i}")
             kata_kunci_baru.append((kata.strip(), int(bobot), deskripsi.strip()))
         with col2:
@@ -152,8 +157,8 @@ with st.expander("Input Kata Kunci"):
 
     kumpulan_kata_kunci = kata_kunci_baru
 
-kunci_jawaban = st.text_area("Kunci Jawaban", value="Internet adalah jaringan global yang dapat di akses publik, Internet memiliki cakupan luas")
-jawaban_mahasiswa = st.text_area("Jawaban Mahasiswa", value="Internet bisa di akses publik")
+kunci_jawaban = st.text_area("Kunci Jawaban", value="Ethernet adalah sebuah metode akses media jaringan di mana semua host di jaringan tersebut berbagi bandwitdh yang sama dari sebuah link.")
+jawaban_mahasiswa = st.text_area("Jawaban Mahasiswa", value="Ethernet adalah sebuah interfaces atau sebuah jenis pengkabelan dan pemprosesan sinyal untuk data jaringan.")
 
 if st.button("Proses Penilaian"):
     kunci_dict = buat_kamus_dari_kumpulan(kumpulan_kata_kunci)

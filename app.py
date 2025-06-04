@@ -124,14 +124,19 @@ with st.expander("Input Kata Kunci"):
 
     if "kata_kunci_list" not in st.session_state:
         st.session_state.kata_kunci_list = [
-            { "kata": "metode",     "bobot": 8, "deskripsi": "Merujuk pada cara atau teknik yang digunakan dalam akses media." },
-            { "kata": "akses",      "bobot": 7, "deskripsi": "Menunjukkan proses menghubungkan atau menggunakan jaringan." },
-            { "kata": "media",      "bobot": 6, "deskripsi": "Sarana fisik atau logis untuk transmisi data." },
-            { "kata": "jaringan",   "bobot": 5, "deskripsi": "Kumpulan perangkat yang saling terhubung untuk komunikasi data." },
-            { "kata": "berbagi",    "bobot": 4, "deskripsi": "Menunjukkan bahwa beberapa host menggunakan sumber daya bersama." },
-            { "kata": "bandwidth",  "bobot": 3, "deskripsi": "Kapasitas maksimum transfer data dalam jaringan." },
-            { "kata": "sama",       "bobot": 2, "deskripsi": "Mengindikasikan kesetaraan penggunaan oleh semua host." },
-            { "kata": "link",       "bobot": 1, "deskripsi": "Sambungan fisik atau logis antar perangkat dalam jaringan." }
+            { "kata": "neural",     "bobot": 10, "deskripsi": "Berkaitan dengan sistem saraf buatan yang meniru cara kerja otak." },
+            { "kata": "network",    "bobot": 10, "deskripsi": "Kumpulan unit yang saling terhubung untuk memproses informasi." },
+            { "kata": "learning",   "bobot": 10, "deskripsi": "Proses perolehan pengetahuan oleh jaringan dari lingkungan." },
+            { "kata": "knowledge",  "bobot": 9,  "deskripsi": "Informasi atau pengalaman yang disimpan dalam jaringan." },
+            { "kata": "synaptic",   "bobot": 9,  "deskripsi": "Berkaitan dengan koneksi antar unit yang menyimpan bobot pengetahuan." },
+            { "kata": "weights",    "bobot": 9,  "deskripsi": "Nilai numerik pada koneksi antar unit untuk menyimpan informasi." },
+            { "kata": "processor",  "bobot": 8,  "deskripsi": "Unit pemroses informasi dalam jaringan saraf." },
+            { "kata": "parallel",   "bobot": 8,  "deskripsi": "Menunjukkan bahwa pemrosesan dilakukan secara bersamaan di banyak unit." },
+            { "kata": "units",      "bobot": 7,  "deskripsi": "Elemen sederhana dalam jaringan yang melakukan proses dasar." },
+            { "kata": "brain",      "bobot": 10, "deskripsi": "Sistem biologis yang menjadi inspirasi utama jaringan saraf buatan." },
+            { "kata": "acquire",    "bobot": 8,  "deskripsi": "Tindakan jaringan dalam memperoleh informasi dari lingkungan." },
+            { "kata": "store",      "bobot": 8,  "deskripsi": "Kemampuan jaringan untuk menyimpan pengetahuan dalam bobot." },
+            { "kata": "connection", "bobot": 7,  "deskripsi": "Hubungan antar unit yang memungkinkan aliran informasi."}
         ]
 
     kata_kunci_baru = []
@@ -157,8 +162,8 @@ with st.expander("Input Kata Kunci"):
 
     kumpulan_kata_kunci = kata_kunci_baru
 
-kunci_jawaban = st.text_area("Kunci Jawaban", value="Ethernet adalah sebuah metode akses media jaringan di mana semua host di jaringan tersebut berbagi bandwitdh yang sama dari sebuah link.")
-jawaban_mahasiswa = st.text_area("Jawaban Mahasiswa", value="Ethernet adalah sebuah interfaces atau sebuah jenis pengkabelan dan pemprosesan sinyal untuk data jaringan.")
+kunci_jawaban = st.text_area("Kunci Jawaban", value="A neural network is a massively parallel distributed processor which is made up of simple processing units. It has a natural propensity for storing experiential knowledge. Neural networks resemble the brain in two aspects; knowledge is acquired by the network from its environment through a learning process, interneuron connection strength known as synaptic weights are used to store the acquired knowledge.")
+jawaban_mahasiswa = st.text_area("Jawaban Mahasiswa", value="An artificial neural network is a highly distributed processor which consists of several simple processing units. It resembles the human brain, because the processing units are neurons, which are connected with weights. The human brain also consists of neurons.")
 
 if st.button("Proses Penilaian"):
     kunci_dict = buat_kamus_dari_kumpulan(kumpulan_kata_kunci)

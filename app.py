@@ -94,12 +94,12 @@ def hitung_miu_rules(r, k, a):
     return miu_rules
 
 def hitung_nilai_rules():
-    r_values = [0, 0.5, 1]
-    k_values = [0, 0.5, 1]
-    a_values = [0, 0.5, 1]
+    r_values = [0.1, 0.5, 1]
+    k_values = [0.1, 0.5, 1]
+    a_values = [0.1, 0.5, 1]
     nilai_rules = []
     for r, k, a in itertools.product(r_values, k_values, a_values):
-        nilai = 100 * (0.5 * r + 0.3 * k + 0.2 * a)
+        nilai = 100 * (0.4 * r + 0.3 * k + 0.3 * a)
         nilai_rules.append(nilai)
     return nilai_rules
 

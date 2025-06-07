@@ -4,15 +4,21 @@ import itertools
 from typing import List
 
 def buat_kamus_dari_kumpulan(kumpulan):
-    return {kata.lower(): {'bobot': bobot, 'deskripsi': deskripsi} for kata, bobot, deskripsi in kumpulan}
+    kamus = {}
+    for item in kumpulan:
+        kata_input = item["kata"]
+        bobot = item["bobot"]
+        deskripsi = item["deskripsi"]
+        alternatif = [k.strip().lower() for k in kata_input.split('|')]
+        kamus[tuple(alternatif)] = {'bobot': bobot, 'deskripsi': deskripsi}
+    return kamus
 
 def hitung_relevansi(kunci_dict, jawaban):
     jawaban = jawaban.lower()
-    total_bobot = sum(item['bobot'] for item in kunci_dict.values())
+    total_bobot = sum(info['bobot'] for info in kunci_dict.values())
     bobot_ditemukan = 0
-    for kata, info in kunci_dict.items():
-        pattern = r'\b' + re.escape(kata) + r'\b'
-        if re.search(pattern, jawaban):
+    for kata_list, info in kunci_dict.items():
+        if any(re.search(r'\b' + re.escape(k) + r'\b', jawaban) for k in kata_list):
             bobot_ditemukan += info['bobot']
     return bobot_ditemukan / total_bobot if total_bobot > 0 else 0
 
@@ -20,9 +26,8 @@ def hitung_kelengkapan(kunci_dict, jawaban):
     jawaban = jawaban.lower()
     total_kata_kunci = len(kunci_dict)
     jumlah_ditemukan = 0
-    for kata in kunci_dict:
-        pattern = r'\b' + re.escape(kata) + r'\b'
-        if re.search(pattern, jawaban):
+    for kata_list in kunci_dict:
+        if any(re.search(r'\b' + re.escape(k) + r'\b', jawaban) for k in kata_list):
             jumlah_ditemukan += 1
     return jumlah_ditemukan / total_kata_kunci if total_kata_kunci > 0 else 0
 
@@ -38,22 +43,22 @@ def cek_kata_kunci_ditemukan(kunci_dict, jawaban):
     jawaban = jawaban.lower()
     ditemukan = []
     belum = []
-    for kata in kunci_dict:
-        pattern = r'\b' + re.escape(kata) + r'\b'
-        if re.search(pattern, jawaban):
-            ditemukan.append(kata)
+    for kata_list in kunci_dict:
+        if any(re.search(r'\b' + re.escape(k) + r'\b', jawaban) for k in kata_list):
+            ditemukan.append(' | '.join(kata_list)) 
         else:
-            belum.append(kata)
+            belum.append(' | '.join(kata_list))
     return ditemukan, belum
 
 def buat_feedback(kunci_dict, belum_disebut):
     feedback = []
-    for kata in belum_disebut:
-        info = kunci_dict.get(kata, {'bobot': 0, 'deskripsi': ''})
+    for key_str in belum_disebut:
+        kata_tuple = tuple(k.strip() for k in key_str.split('|'))
+        info = kunci_dict.get(kata_tuple, {'bobot': 0, 'deskripsi': ''})
         if info['bobot'] >= 2:
-            feedback.append(f"Kata kunci penting belum disebut: **{kata}** (bobot {info['bobot']}) - *{info['deskripsi']}*")
+            feedback.append(f"Kata kunci penting belum disebut: **{key_str}** (bobot {info['bobot']}) - *{info['deskripsi']}*")
         else:
-            feedback.append(f"Anda belum menyebutkan **{kata}** - *{info['deskripsi']}*")
+            feedback.append(f"Anda belum menyebutkan **{key_str}** - *{info['deskripsi']}*")
     if not feedback:
         feedback.append("Semua kata kunci telah disebut. Jawaban sangat lengkap.")
     return feedback
@@ -124,19 +129,19 @@ with st.expander("Input Kata Kunci"):
 
     if "kata_kunci_list" not in st.session_state:
         st.session_state.kata_kunci_list = [
-            { "kata": "neural",     "bobot": 10, "deskripsi": "Berkaitan dengan sistem saraf buatan yang meniru cara kerja otak." },
-            { "kata": "network",    "bobot": 10, "deskripsi": "Kumpulan unit yang saling terhubung untuk memproses informasi." },
-            { "kata": "learning",   "bobot": 10, "deskripsi": "Proses perolehan pengetahuan oleh jaringan dari lingkungan." },
-            { "kata": "knowledge",  "bobot": 9,  "deskripsi": "Informasi atau pengalaman yang disimpan dalam jaringan." },
-            { "kata": "synaptic",   "bobot": 9,  "deskripsi": "Berkaitan dengan koneksi antar unit yang menyimpan bobot pengetahuan." },
-            { "kata": "weights",    "bobot": 9,  "deskripsi": "Nilai numerik pada koneksi antar unit untuk menyimpan informasi." },
-            { "kata": "processor",  "bobot": 8,  "deskripsi": "Unit pemroses informasi dalam jaringan saraf." },
-            { "kata": "parallel",   "bobot": 8,  "deskripsi": "Menunjukkan bahwa pemrosesan dilakukan secara bersamaan di banyak unit." },
-            { "kata": "units",      "bobot": 7,  "deskripsi": "Elemen sederhana dalam jaringan yang melakukan proses dasar." },
-            { "kata": "brain",      "bobot": 10, "deskripsi": "Sistem biologis yang menjadi inspirasi utama jaringan saraf buatan." },
-            { "kata": "acquire",    "bobot": 8,  "deskripsi": "Tindakan jaringan dalam memperoleh informasi dari lingkungan." },
-            { "kata": "store",      "bobot": 8,  "deskripsi": "Kemampuan jaringan untuk menyimpan pengetahuan dalam bobot." },
-            { "kata": "connection", "bobot": 7,  "deskripsi": "Hubungan antar unit yang memungkinkan aliran informasi."}
+            { "kata": "neural | neuron | neurons | ann", "bobot": 10, "deskripsi": "Refers to artificial neural system concepts." },
+            { "kata": "network | networks | system | systems", "bobot": 9, "deskripsi": "A network of processing units." },
+            { "kata": "learning | learn | learns | learned | train | trains | trained | training", "bobot": 8, "deskripsi": "The process of acquiring knowledge from data or environment." },
+            { "kata": "brain | brains", "bobot": 7, "deskripsi": "The biological organ that inspires artificial neural networks." },
+            { "kata": "synaptic | synapse | synapses", "bobot": 6, "deskripsi": "Related to the connections between neurons." },
+            { "kata": "weights | weight | weighted", "bobot": 6, "deskripsi": "Numerical values that affect output results." },
+            { "kata": "knowledge | knowledges", "bobot": 7, "deskripsi": "Information or experience stored in the network." },
+            { "kata": "processor | processors", "bobot": 7, "deskripsi": "The unit that processes information within the network." },
+            { "kata": "parallel | parallels", "bobot": 6, "deskripsi": "Simultaneous processing across multiple units." },
+            { "kata": "units", "bobot": 7, "deskripsi": "Basic elements in the network that perform simple processing." },
+            { "kata": "acquire | acquires | acquired | acquiring | obtain | obtains | obtained", "bobot": 6, "deskripsi": "The act of the network gaining data from the environment." },
+            { "kata": "store | stores | stored | storing", "bobot": 6, "deskripsi": "The ability to retain knowledge." },
+            { "kata": "connection | connections", "bobot": 5, "deskripsi": "Links between units enabling data flow." }
         ]
 
     kata_kunci_baru = []
@@ -145,7 +150,7 @@ with st.expander("Input Kata Kunci"):
         col1, col2 = st.columns([5, 1])
         with col1:
             st.markdown(f"**Kata Kunci #{i+1}**")
-            kata = st.text_input(f"Kata #{i+1}", item["kata"], key=f"kata_{i}")
+            kata = st.text_input(f"Kata #{i+1} (gunakan `|` untuk sinonim)", item["kata"], key=f"kata_{i}")
             bobot = st.number_input(f"Bobot #{i+1}", min_value=1, max_value=10, value=item["bobot"], key=f"bobot_{i}")
             deskripsi = st.text_input(f"Deskripsi #{i+1}", item["deskripsi"], key=f"desk_{i}")
             kata_kunci_baru.append((kata.strip(), int(bobot), deskripsi.strip()))
@@ -160,10 +165,13 @@ with st.expander("Input Kata Kunci"):
         st.session_state.kata_kunci_list.append({"kata": "", "bobot": 1, "deskripsi": ""})
         st.rerun()
 
-    kumpulan_kata_kunci = kata_kunci_baru
+    kumpulan_kata_kunci = [
+        {"kata": k, "bobot": b, "deskripsi": d}
+        for k, b, d in kata_kunci_baru
+    ]
 
 kunci_jawaban = st.text_area("Kunci Jawaban", value="A neural network is a massively parallel distributed processor which is made up of simple processing units. It has a natural propensity for storing experiential knowledge. Neural networks resemble the brain in two aspects; knowledge is acquired by the network from its environment through a learning process, interneuron connection strength known as synaptic weights are used to store the acquired knowledge.")
-jawaban_mahasiswa = st.text_area("Jawaban Mahasiswa", value="An artificial neural network is a highly distributed processor which consists of several simple processing units. It resembles the human brain, because the processing units are neurons, which are connected with weights. The human brain also consists of neurons.")
+jawaban_mahasiswa = st.text_area("Jawaban Mahasiswa", value="It is a massive parallel distributed processor made up of smaller processing units, that aquire knowledge through the environmnet through a learning process and makes it available for use. It resembles the brain in two ways: - Knowledge is aquired through a stimulating process in the environment - The knowledge is embedded in the synaptic links (weights) of the neurons.")
 
 if st.button("Proses Penilaian"):
     kunci_dict = buat_kamus_dari_kumpulan(kumpulan_kata_kunci)

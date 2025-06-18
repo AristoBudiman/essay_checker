@@ -138,7 +138,7 @@ with st.expander("Input Kata Kunci"):
             { "kata": "knowledge | knowledges", "bobot": 7, "deskripsi": "Information or experience stored in the network." },
             { "kata": "processor | processors", "bobot": 7, "deskripsi": "The unit that processes information within the network." },
             { "kata": "parallel | parallels", "bobot": 6, "deskripsi": "Simultaneous processing across multiple units." },
-            { "kata": "units", "bobot": 7, "deskripsi": "Basic elements in the network that perform simple processing." },
+            { "kata": "units | unit", "bobot": 7, "deskripsi": "Basic elements in the network that perform simple processing." },
             { "kata": "acquire | acquires | acquired | acquiring | obtain | obtains | obtained", "bobot": 6, "deskripsi": "The act of the network gaining data from the environment." },
             { "kata": "store | stores | stored | storing", "bobot": 6, "deskripsi": "The ability to retain knowledge." },
             { "kata": "connection | connections", "bobot": 5, "deskripsi": "Links between units enabling data flow." }
@@ -171,7 +171,7 @@ with st.expander("Input Kata Kunci"):
     ]
 
 kunci_jawaban = st.text_area("Kunci Jawaban", value="A neural network is a massively parallel distributed processor which is made up of simple processing units. It has a natural propensity for storing experiential knowledge. Neural networks resemble the brain in two aspects; knowledge is acquired by the network from its environment through a learning process, interneuron connection strength known as synaptic weights are used to store the acquired knowledge.")
-jawaban_mahasiswa = st.text_area("Jawaban Mahasiswa", value="It is a massive parallel distributed processor made up of smaller processing units, that aquire knowledge through the environmnet through a learning process and makes it available for use. It resembles the brain in two ways: - Knowledge is aquired through a stimulating process in the environment - The knowledge is embedded in the synaptic links (weights) of the neurons.")
+jawaban_mahasiswa = st.text_area("Jawaban Mahasiswa", value="Artificial neural network is a massively parrallal distributed processor made up of simple processing units which has a natural propensity to acquire knowledge from the environment and make it available for future use. It resembels the human brain in following ways. 1. Both of them acquire knowledge from the environment. 2. The neurons are connected by synapses cahrecterized by their weights which can be adjusted.")
 
 if st.button("Proses Penilaian"):
     kunci_dict = buat_kamus_dari_kumpulan(kumpulan_kata_kunci)
